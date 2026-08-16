@@ -45,24 +45,53 @@ The project combines offensive security techniques with defensive monitoring to 
 (Add your architecture image here)
 
 ```
-Kali Linux
-      │
-      │
-      ▼
-Windows Server 2022
-      │
-      ├─────────────► Sysmon
-      │
-      ├─────────────► Suricata
-      │
-      ▼
-Wazuh Agent
-      │
-      ▼
-Wazuh Manager
-      │
-      ▼
-Dashboard
+                         ISOLATED VIRTUALBOX INTERNAL NETWORK
+                                  10.10.10.0/24
+                                         │
+                  ┌──────────────────────┼──────────────────────┐
+                  │                      │                      │
+                  ▼                      ▼                      ▼
+        ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────────┐
+        │    Kali Linux   │    │ Windows Server  │    │    Metasploitable   │
+        │  ATTACKER VM    │    │      2022       │    │      TARGET VM      │
+        │                 │    │   TARGET VM     │    │                     │
+        │ • Nmap          │    │ • Sysmon        │    │ • Vulnerable        │
+        │ • Nikto         │    │ • Suricata      │    │   Services          │
+        │ • Enumeration   │    │ • Wazuh Agent   │    │ • Wazuh Monitoring  │
+        │ • Attack Tools  │    │                 │    │                     │
+        └────────┬────────┘    └────────┬────────┘    └──────────┬──────────┘
+                 │                      │                        │
+                 │                      │                        │
+                 │      ATTACKS         │                        │
+                 ├─────────────────────►│                        │
+                 │                      │                        │
+                 └─────────────────────────────────────────────► │
+                                        │                        │
+                                        │                        │
+                              Telemetry / Logs                   │
+                                        │                        │
+                                        └────────────┬───────────┘
+                                                     │
+                                                     ▼
+                                         ┌──────────────────────┐
+                                         │    Wazuh Manager     │
+                                         │      Separate VM     │
+                                         │──────────────────────│
+                                         │ • Log Collection     │
+                                         │ • Event Correlation  │
+                                         │ • Alert Generation   │
+                                         │ • MITRE ATT&CK       │
+                                         └──────────┬───────────┘
+                                                    │
+                                                    ▼
+                                         ┌──────────────────────┐
+                                         │   Wazuh Dashboard    │
+                                         │──────────────────────│
+                                         │ • Security Alerts    │
+                                         │ • Sysmon Events      │
+                                         │ • Suricata Events    │
+                                         │ • Investigation      │
+                                         └──────────────────────┘
 ```
 
 ---
